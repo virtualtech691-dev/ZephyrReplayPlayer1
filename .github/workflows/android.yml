@@ -11,8 +11,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Descargar proyecto
+      - name: Descargar repositorio
         uses: actions/checkout@v4
+
+      - name: Extraer proyecto Android
+        run: |
+          mkdir -p extraido
+          unzip -o ZephyrReplayPlayer_source_v0.1-1.zip -d extraido
+          ls -la extraido/ZephyrReplayPlayer
 
       - name: Configurar Java
         uses: actions/setup-java@v4
@@ -26,10 +32,11 @@ jobs:
           gradle-version: '8.9'
 
       - name: Compilar APK
+        working-directory: extraido/ZephyrReplayPlayer
         run: gradle assembleDebug
 
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
           name: YRP3D-Duel-Studio-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: extraido/ZephyrReplayPlayer/app/build/outputs/apk/debug/*.apk
